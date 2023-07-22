@@ -1,0 +1,104 @@
+<!-- Header-->
+{% include "header.html" %}
+
+<form method="post" enctype="multipart/form-data" action="{{url_for('edit_item', id=item.id)}}">
+
+<!-- Product section-->
+<section class="py-5">
+    <div class="container mt-1 px-4 px-lg-5 my-5">
+
+        <div class="row gx-4 gx-lg-5">
+            <div class="col-md-6 justify-content-md-center">
+                {% if item.pics_qty == 0 %}
+                    <img class="img-fluid mt-2 mb-2" src="/static/assets/img/no_image.png" alt="..." />
+                {% else %}
+                    <img class="card-img-top mb-5 mb-md-0" src="https://storage.googleapis.com/watch_items/{{item.id}}/0.jpg" alt="..." />
+                {% endif %}
+                Main picture 0: <input type="file" name="img0"  id="formFile0" >
+            </div>
+                <div class="col-md-6">
+                    ID: {{item.id}}
+                    <div class="input-group mb-3 mt-3">
+                      <span class="input-group-text col-2">SKU: </span>
+                      <textarea class="form-control col-2" name="SKU" aria-label="With textarea" rows="1">{{item.SKU}}</textarea>
+                    </div>
+
+                    <div class="input-group input-group-lg mb-3 mt-3">
+                      <span class="input-group-text col-2"> Title : </span>
+                      <textarea class="form-control" name="title" aria-label="With textarea" rows="3">{{item.title}}</textarea>
+                    </div>
+
+                     <div class="input-group input-group-lg mb-3 mt-3">
+                      <span class="input-group-text col-2"> Price: </span>
+                      <textarea type="number" class="form-control" name="price" aria-label="With textarea" rows="1">{{item.price}}</textarea>
+                    </div>
+                    <div class="row mb-5">
+                        <div class="col-4">
+                            <div class="badge bg-info text-wrap" style="width: 12rem;">
+                                <h5> Category: </h5>
+                            </div>
+                        </div>
+                        <div class="col-4">
+                            <select class="form-select" name="category" id="category" aria-label="" style="width: 150px; text-align: center;" >
+                              <option selected value={{item.category}}>{{item.category}}</option>
+                              <option value="shop">shop</option>
+                              <option value="collection">collection</option>
+                              <option value="parts">parts</option>
+                              <option value="archive">archive</option>
+                              <option value="archive-2">archive-2</option>
+                              <option value="archive-3">archive-3</option>
+                              <option value="to-delete">to-delete</option>
+                            </select>
+                        </div>
+                        <div class="col-4">
+                            <li class="list-group-item"> <label for="show_order"> Priority:</label> <input type="number" id="show_order" name="show_order" size="5" value={{item.show_order}} style="width: 70px; text-align: center;"> </li>
+                        </div>
+                    </div>
+                </div>
+
+        <div class="mb-3 input-group-lg">
+          <label for="DescriptionTextarea" class="form-label">Edit description:</label>
+          <textarea class="form-control" id="DescriptionTextarea" name="description" rows="5" style="white-space: pre-wrap">{{item.description}}</textarea>
+        </div>
+        <div align="center">
+            <button type="submit" class="btn btn-lg btn-primary mt-1 mb-4 w-50" >Update details </button>
+        </div>
+            <hr>
+         <!--GALLERY-->
+        <div class="row pt-3 pb-3 gx-1  row-cols-1 row-cols-md-3 row-cols-xl-5 justify-content-center">
+            {% for pic_num in range (1,10) %}
+                <div class="col pt-3 pb-3 px-3">
+                    <div class="row mb-3 justify-content-center">  Image {{pic_num}}: </div>
+                    <input type="file" name="img{{pic_num}}"  id="formFile{{pic_num}}" >
+                    {% if pic_num < item.pics_qty %}
+                    <img class="img-fluid mt-2 mb-2" src="https://storage.googleapis.com/watch_items/{{item.id}}/{{pic_num}}.jpg" alt="..." data-bs-toggle="modal" data-bs-target="#itempic{{pic_num }}"/>
+                    <a href="{{ url_for('delete_img', itm=item.id, pic_num=pic_num) }}" class="btn btn-outline-danger btn-sm">delete</a>
+                     {% else %}
+                    <img class="img-fluid mt-2 mb-2" src="/static/assets/img/no_image.png" alt="..." />
+                    {% endif %}
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+        <div align="center">
+            <button type="submit" class="btn btn-lg btn-primary mt-0 mb-5 w-50" >Update images </button>
+        </div>
+        <hr>
+    <div class="row mt-5 justify-content-md-center" >
+        <div class="col-3">
+            <div class="input-group input-group-lg mb-3 mt-3">
+                <span class="input-group-text"> Discount price: </span>
+                <textarea class="form-control" name="discountnprice" aria-label="With textarea" rows="1"></textarea>
+            </div>
+        </div>
+        <div class="col-3">
+            <button type="submit" class="btn btn-lg btn-outline-warning mb-3 mt-3" >Create coupon</button>
+        </div>
+    </div>
+
+</section>
+</form>
+
+
+ <!-- Footer-->
+{% include "footer.html" %}

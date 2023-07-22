@@ -1,0 +1,65 @@
+<!-- Header-->
+{% include "header.html" %}
+
+<!-- Product section-->
+<section class="py-5">
+    <div class="container mt-1 px-4 px-lg-5 my-5">
+
+        <div class="row gx-4 gx-lg-5">
+            <div class="col-md-6"><img class="card-img-top mb-5 mb-md-0" src="https://storage.googleapis.com/watch_items/{{item.id}}/0.jpg" alt="..."  data-bs-toggle="modal" data-bs-target="#itempic0"  /></div>
+                <div class="col-md-6">
+                    <div class="small mb-1">SKU: {{item.SKU}}</div>
+                    <p class="display-6 fw-bolder">{{item.title}}</p>
+                    <div class="fs-5 mt-3 mb-5">
+                       <p class="text-primary fw-bold">Price: $ {{item.price}}</p>
+                    </div>
+                    <div class="small mb-3">Quantity: 1 </div>
+                        <!--<input class="form-control text-center me-3" id="inputQuantity" type="num" value="1" style="max-width: 3rem" readonly /> -->
+                        <a href="{{ url_for('add_item_to_cart',id=item.id) }}">
+                        <button class="btn btn-primary btn-lg flex-shrink-0" type="button">
+                            <i class="bi-cart-fill me-1"></i>
+                            Add to cart
+                        </button>
+                        </a>
+                </div>
+            </div>
+
+        <div class="row mt-2 gx-4 gx-lg-5 align-items-center">
+           <p class="lead" style="white-space: pre-wrap"> {{item.description}} </p>
+        </div>
+
+        <!--  CALLERY -->
+        {% if item.pics_qty>1 %}
+            <div class="small mb-1 text-center">Images gallery (click to enlarge)</div>
+        {% endif %}
+        <div class="row mt-2 gx-1 row-cols-2 row-cols-md-4 row-cols-xl-6 justify-content-center">
+            {% for pic_num in range (1, item.pics_qty) %}
+                <div class="col mb-1">
+                    <img class="img-fluid" src="https://storage.googleapis.com/watch_items/{{img_list[pic_num]}}" alt="..." data-bs-toggle="modal" data-bs-target="#itempic{{pic_num}}"/>
+                    <!--<img class="img-fluid" src="{{item.data_folder}}{{pic_num}}.jpg" alt="..." data-bs-toggle="modal" data-bs-target="#itempic{{pic_num}}"/> -->
+                </div>
+            {% endfor %}
+        </div>
+
+        <!-- Modal -->
+       {% for pic_num in range (0, item.pics_qty) %}
+        <div class="modal fade" id="itempic{{pic_num}}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-scrollable" style="max-width : 1600px;">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id=""> {{item.title}} </h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"> </button>
+                    </div>
+                    <div class="modal-body">
+                        <img class="img-fluid" src="https://storage.googleapis.com/watch_items/{{img_list[pic_num]}}" />
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+
+    </div>
+</section>
+
+ <!-- Footer-->
+{% include "footer.html" %}

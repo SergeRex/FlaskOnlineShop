@@ -1,0 +1,43 @@
+<!-- Header-->
+{% include "header.html" %}
+
+<div class="container px-4 px-lg-5 mt-3">
+{% if coupons %}
+    <p class=" display-6 mb-3 mt-0 text-center "> Coupons</p>
+
+    <div class="row px-1 py-1 mb-3" style="height: 45px; color:white; background-color:#020B4A;">
+        <div class="col-1 py-1 pt-1 text-center"> Id </div>
+        <div class="col-1 py-1 pt-1 text-center"> SKU </div>
+        <div class="col-1 ">  </div>
+        <div class="col-4 py-1"> Title </div>
+        <div class="col-1 py-1"> Price </div>
+        <div class="col-1 py-1"> Disc. price </div>
+        <div class="col-1 py-1"> Code </div>
+        <div class="col-1 py-1"> </div>
+        <div class="col-1 py-1"> </div>
+    </div>
+
+
+    {% for coupon in coupons %}
+    <div class="row px-1 py-1 mb-2" style="height: 90px; background-color:#f2f4fc;">
+        <div class="col-1 px-1 pt-3 text-center"> {{coupon.item_id}} </div>
+        <div class="col-1 px-1 pt-3 text-center"> {{coupon.SKU}} </div>
+        <div class="col-1 "> <img class="img-thumbnail" src="https://storage.googleapis.com/watch_items/{{coupon.item_id}}/0.jpg" alt="..." /> </div>
+        <div class="col-4 pt-3"> {{coupon.title}}     </div>
+        <div class="col-1 pt-3"> {{coupon.price}}     </div>
+        <div class="col-1 pt-3"> {{coupon.discount_price}}  </div>
+        <div class="col-1 pt-3"> {{coupon.code}}  </div>
+
+        <div class="col-2 pt-3">
+            <div class="text-center"><a class="btn btn-outline-danger mt-auto" href="{{ url_for('delete_coupon', code=coupon.code) }}">Delete coupon</a></div>
+        </div>
+    </div>
+    {% endfor %}
+
+{% else %}
+    <p class=" display-6 mb-3 mt-0 text-center "> No coupons </p>
+{% endif %}
+</div>
+
+ <!-- Footer-->
+{% include "footer.html" %}

@@ -1,0 +1,136 @@
+{% include "header.html" %}
+<form method="post" enctype="multipart/form-data" action="{{url_for('shopping_cart')}}">
+
+        <div align="center">
+          <div class="col" style="max-width: 800px;">
+            <div class="card my-5" style="background-color: #eee;">
+              <div class="card-body p-4">
+                <div class="row">
+                    <h5 class="col-5 col-md-7 col-lg-8 mb-3"><a href="/shop" class="text-body"><i
+                          class="fas fa-long-arrow-alt-left me-2"></i>Continue shopping</a></h5>
+                    <!-- Discount -->
+                    <div class="col-7 col-md-5 col-lg-4 align-self-end">
+                      <div class="input-group input-group-sm mb-3">
+                        <input type="text" class="form-control" placeholder="Coupon number" name="coupon_number" aria-label="Coupon" aria-describedby="inputGroup-sizing-sm">
+                        <div class="input-group-append">
+                          <button class="btn btn-sm btn-outline-secondary" type="submit">Apply discount</button>
+                        </div>
+                      </div>
+                    </div>
+                        <hr>
+                    <div class="text-center mb-4">
+                      <div>
+                        <p class="display-6 mb-1">Shopping cart</p>
+                        {% if session['num_cart_items']>1 %}
+                          <p class="mb-0">You have {{session['num_cart_items']}} items in your cart</p>
+                        {% elif session['num_cart_items']==1 %}
+                          <p class="mb-0">You have one item in your cart</p>
+                        {% else %}
+                          <p class="mb-0">is empty</p>
+                          <a class="nav-link my-4 text-primary" href="/shop">
+                                <p class="display-4">Visit shop</p>
+                          </a>
+                        {% endif %}
+                      </div>
+                    </div>
+                    {% for item in cart_items %}
+                    <!--- item  -->
+                    <div class="card mb-3">
+                      <div class="card-body">
+
+                        <div class="d-flex justify-content-between">
+                          <div class="d-flex flex-row align-items-center">
+                            <div>
+                              <img
+                                src="https://storage.googleapis.com/watch_items/{{item.id}}/0.jpg"
+                                class="img-fluid rounded-3 p-0 m-0" alt="Shopping item" style="
+                                         max-width:100px;"/>
+                            </div>
+                          </div>
+
+                          <div class="d-flex flex-row align-items-start">
+                            <div class="ms-3" >
+                              <p class="small mb-0">SKU: {{item.SKU}} </p>
+                              <a class="nav-link" href="{{ url_for('view_shop_item', id=item.id) }}">
+                                <h5>{{item.title}} </h5>
+                              </a>
+                              {% if item.discount_price != item.price %}
+                              <p class="small mb-0 text-danger">Discount coupon {{item.coupon_code}} applied </p>
+                              {% endif %}
+                            </div>
+                          </div>
+
+                          <div class="d-flex flex-row align-items-center">
+                             <div class="ms-0" >
+                                 {% if item.discount_price != item.price %}
+                                  <h5 class="mb-0 me-3 text-decoration-line-through">${{item.price}}</h5>
+                                  <h5 class="mb-0 me-3 text-danger ">${{item.discount_price}}</h5>
+                                 {% else %}
+                                 <h5 class="mb-0 me-3">${{item.discount_price}}</h5>
+                                 {% endif %}
+                              </div>
+                                <a href="{{ url_for('delete_item_from_cart',id=item.id) }}" style="color:black;"><i class="fas fa-trash-alt"></i></a>
+                          </div>
+
+                        </div>
+                      </div>
+                    </div>
+                    <!--- end item  -->
+                    {% endfor %}
+                    <hr>
+                    <div class="h4" align="center">
+                            <span class="">Total payment: </span>
+                            {% if items_cost != amount_to_pay %}
+                            <span class="text-danger "><strong>${{amount_to_pay}}</strong></span>
+                            {% else %}
+                            <span class=" "><strong>${{amount_to_pay}}</strong></span>
+                            {% endif %}
+                    </div>
+                  <div class="card p-3 mt-3" style="background-color: #D9E4EC;">
+
+                    <!--PAYPAL -->
+                    <script src="https://www.paypal.com/sdk/js?client-id={{ paypal_business_client_id }}&currency=USD"></script>
+                    <!-- Set up a container element for the button -->
+                    <div id="paypal-button-container"></div>
+                    <script>
+                        paypal.Buttons({
+                            // Sets up the transaction when a payment button is clicked
+                            createOrder: (data, actions) => {
+                                return actions.order.create({
+                                    purchase_units: [{
+                                        amount: {
+                                            value: {{amount_to_pay}} // Can also reference a variable or function
+                                        }
+                                    }]
+                                });
+                            },
+                            // Finalize the transaction after payer approval
+                            // Finalize the transaction on the server after payer approval
+                            onApprove: (data, actions) => {
+                                return fetch(`/payments/${data.orderID}/capture`, {
+                                    method: "post",
+                                })
+                                    .then((response) => response.json())
+                                    .then((orderData) => {
+                                        // Successful capture! For dev/demo purposes:
+                                        console.log('Capture result', orderData, JSON.stringify(orderData, null, 2));
+                                        const transaction = orderData.purchase_units[0].payments.captures[0];
+                                        //alert(`Transaction ${transaction.status}: ${transaction.id}\n\nSee console for all available details`);
+                                        // When ready to go live, remove the alert and show a success message within this page. For example:
+                                        const element = document.getElementById('paypal-button-container');
+                                        element.innerHTML = '<h4 style="text-align:center; color:green;"> Thank you for your payment!</h4>';
+                                        // Or go to another URL:  actions.redirect('thank_you.html');
+                                    });
+                            }
+                        }).render('#paypal-button-container');
+                    </script>
+                    <!--END PAYPAL -->
+                    </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+ </form>
+{% include "footer.html" %}

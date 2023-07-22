@@ -1,0 +1,43 @@
+<!-- Header-->
+{% include "header.html" %}
+
+  <div class="container">
+    <div class="text-center mt-2 "> <h2> Contact us by E-mail </h2> </div>
+    <div class="row">
+      <div class="col-lg-8 col-md-10 mx-auto">
+        <form name="sentMessage" id="contactForm" action="{{ url_for('contact') }}" method="post" novalidate>
+          <div class="control-group">
+            <div class="form-group floating-label-form-group controls">
+              <label>Your E-mail address</label>
+              <input type="email" name="email" class="form-control" placeholder="Email Address" id="email" required data-validation-required-message="Please enter your email address.">
+              <p class="help-block text-danger"></p>
+            </div>
+          </div>
+          <div class="control-group">
+            <div class="form-group floating-label-form-group controls">
+              <label>Message</label>
+              <textarea rows="5" name="message" class="form-control" placeholder="Message" id="message" required data-validation-required-message="Please enter a message."></textarea>
+              <p class="help-block text-danger"></p>
+            </div>
+          </div>
+          <br>
+          <div id="success"></div>
+          <div class="row justify-content-center">
+          <button type="submit" class="btn btn-primary" id="sendMessageButton">Send</button>
+          </div>
+          {% if msg_sent: %}
+          <div class="fs-5 mt-3 mb-5">
+            <p class="text-success"> Your message has been sent successfully. We will get back to you as soon as possible!  </p>
+          </div>
+          {% endif %}
+        </form>
+      </div>
+    </div>
+   <br>
+  </div>
+
+ <!-- Footer-->
+{% include "footer.html" %}
+
+
+
